@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from cashflow.views import record_list
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', record_list),
 ]
