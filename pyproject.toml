@@ -66,7 +66,7 @@ select = [
   "W",      # pycodestyle warnings
   "YTT",    # yesqa
 ]
-ignore = ["COM812"]
+ignore = ["COM812","EXE001"]
 
 [tool.ruff.lint.isort]
 known-first-party = []
