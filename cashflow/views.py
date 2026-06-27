@@ -1,6 +1,7 @@
 # Create your views here.
 from django.shortcuts import render
-from .models import Record, Status, OperationType, Category, Subcategory
+
+from .models import Category, OperationType, Record, Status, Subcategory
 
 
 def record_list(request):

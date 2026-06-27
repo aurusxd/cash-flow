@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "django>=6.0.6",
+    "python-dotenv>=1.2.2",
 ]
 
 
@@ -97,3 +98,6 @@ avoid-escape = true
   "PT002",   # docstring в фикстурах
   "PT003",   # названия тестов
 ]
+
+
+"cashflow/migrations/*.py" = ["ALL"]
