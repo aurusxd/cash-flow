@@ -100,7 +100,7 @@ class Record(models.Model):
     class Meta:
         verbose_name = "Запись ДДС"
         verbose_name_plural = "Записи ДДС"
-        ordering = ["-date"]  # noqa: RUF012
+        ordering = ["-date"]
 
     def __str__(self):
         return f"{self.date} — {self.amount} ₽"

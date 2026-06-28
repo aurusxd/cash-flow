@@ -1,6 +1,8 @@
 from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
+from django.views import View
+from django.views.generic import CreateView, DeleteView, ListView
 
 from cashflow.forms import RecordForm
 from cashflow.models import Record
@@ -47,3 +49,28 @@ class RecordCreateView(CreateView):
     def form_valid(self, form):
         messages.success(self.request, "Запись успешно создана.")
         return super().form_valid(form)
+
+
+class RecordDeleteView(DeleteView):
+    model = Record
+    form_class = RecordForm
+    template_name = "record_delete.html"
+    success_url = reverse_lazy("record_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Запись успешно удалена.")
+        return super().form_valid(form)
+
+
+class RecordDeleteSelectedView(View):
+    def post(self, request):
+        selected_record_ids = request.POST.getlist("selected_records")
+
+        if not selected_record_ids:
+            messages.warning(request, "Выберите хотя бы одну запись.")
+            return redirect("record_list")
+
+        deleted_count, _ = Record.objects.filter(id__in=selected_record_ids).delete()
+
+        messages.success(request, f"Удалено записей: {deleted_count}.")
+        return redirect("record_list")

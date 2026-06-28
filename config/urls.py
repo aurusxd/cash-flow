@@ -18,10 +18,25 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from cashflow.views.record import RecordCreateView, RecordListView
+from cashflow.views.record import (
+    RecordCreateView,
+    RecordDeleteSelectedView,
+    RecordDeleteView,
+    RecordListView,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", RecordListView.as_view(), name="record_list"),
     path("records/create/", RecordCreateView.as_view(), name="record_create"),
+    path(
+        "records/delete/",
+        RecordDeleteSelectedView.as_view(),
+        name="record_delete_selected",
+    ),
+    path(
+        "records/<int:pk>/delete/",
+        RecordDeleteView.as_view(),
+        name="record_delete",
+    ),
 ]
