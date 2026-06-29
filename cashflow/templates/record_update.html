@@ -61,5 +61,48 @@
 </div>
 
 {% endblock content %}
+
+<script>
+    const operationTypeSelect = document.getElementById("id_operation_type");
+    const categorySelect = document.getElementById("id_category");
+    const subcategorySelect = document.getElementById("id_subcategory");
+
+    if (operationTypeSelect && categorySelect && subcategorySelect) {
+        operationTypeSelect.addEventListener("change", async () => {
+            const operationTypeId = operationTypeSelect.value;
+
+            categorySelect.innerHTML = '<option value="">---------</option>';
+            subcategorySelect.innerHTML = '<option value="">---------</option>';
+
+            if (!operationTypeId) return;
+
+            const response = await fetch(
+                `/ajax/categories/?operation_type_id=${operationTypeId}`
+            );
+            const categories = await response.json();
+
+            categories.forEach(category => {
+                categorySelect.add(new Option(category.name, category.id));
+            });
+        });
+
+        categorySelect.addEventListener("change", async () => {
+            const categoryId = categorySelect.value;
+
+            subcategorySelect.innerHTML = '<option value="">---------</option>';
+
+            if (!categoryId) return;
+
+            const response = await fetch(
+                `/ajax/subcategories/?category_id=${categoryId}`
+            );
+            const subcategories = await response.json();
+
+            subcategories.forEach(subcategory => {
+                subcategorySelect.add(new Option(subcategory.name, subcategory.id));
+            });
+        });
+    }
+</script>
 </body>
 </html>
