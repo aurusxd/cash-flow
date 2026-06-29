@@ -4,7 +4,7 @@ from cashflow.models import Category, OperationType, Status, Subcategory
 
 
 class Command(BaseCommand):
-    help = "Create default cash flow dictionaries."
+    help = "Создает базовые справочники для учета ДДС."
 
     def handle(self, *_args, **_options):
         statuses = ("Бизнес", "Личное", "Налог")
@@ -21,6 +21,7 @@ class Command(BaseCommand):
 
         created_count = 0
 
+        # get_or_create позволяет безопасно запускать команду при каждом старте.
         for status_name in statuses:
             _, created = Status.objects.get_or_create(name=status_name)
             created_count += int(created)
@@ -52,6 +53,6 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Default dictionaries are ready. Created objects: {created_count}."
+                f"Базовые справочники готовы. Создано объектов: {created_count}."
             )
         )

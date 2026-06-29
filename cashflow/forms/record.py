@@ -70,11 +70,12 @@ class RecordForm(forms.ModelForm):
 
         self.fields["comment"].required = False
 
-        self.fields["category"].queryset = Category.objects.none()
-        self.fields["subcategory"].queryset = Subcategory.objects.none()
-
         operation_type_id = self.data.get("operation_type")
         category_id = self.data.get("category")
+
+        # Ограничиваем зависимые списки, чтобы Django валидировал только верные связи.
+        self.fields["category"].queryset = Category.objects.none()
+        self.fields["subcategory"].queryset = Subcategory.objects.none()
 
         if operation_type_id:
             self.fields["category"].queryset = Category.objects.filter(
@@ -101,6 +102,7 @@ class RecordForm(forms.ModelForm):
         category = cleaned_data.get("category")
         subcategory = cleaned_data.get("subcategory")
 
+        # Серверная проверка нужна даже при отключенном или обойденном JavaScript.
         if (
             category
             and operation_type

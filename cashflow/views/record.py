@@ -46,6 +46,7 @@ class RecordListView(ListView):
         selected_operation_type = self.request.GET.get("operation_type", "")
         selected_category = self.request.GET.get("category", "")
 
+        # Списки фильтров должны учитывать выбранные родительские справочники.
         categories = Category.objects.select_related("operation_type")
         if selected_operation_type:
             categories = categories.filter(operation_type_id=selected_operation_type)
