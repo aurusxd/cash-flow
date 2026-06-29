@@ -21,6 +21,7 @@ class ReferenceConfig:
     queryset_relations: tuple[str, ...] = ()
 
 
+# Единая конфигурация позволяет обслуживать все справочники общими CRUD-view.
 REFERENCES = {
     "statuses": ReferenceConfig(
         slug="statuses",

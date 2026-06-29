@@ -153,7 +153,7 @@
                     <th>Подкатегория</th>
                     <th>Сумма</th>
                     <th>Комментарий</th>
-                    <th></th>
+                    <th class="text-end">Действия</th>
                 </tr>
                 </thead>
 
@@ -176,12 +176,27 @@
                         <td>{{ record.subcategory }}</td>
                         <td>{{ record.amount }} ₽</td>
                         <td>{{ record.comment|default:"—" }}</td>
-                        <td><a href="{%url 'record_update' record.pk %}"><i class="bi bi-pencil-square"></i></a></td>
+                        <td class="text-end">
+                            <a
+                                class="btn btn-outline-primary btn-sm"
+                                href="{% url 'record_update' record.pk %}"
+                                title="Редактировать"
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a
+                                class="btn btn-outline-danger btn-sm"
+                                href="{% url 'record_delete' record.pk %}"
+                                title="Удалить"
+                            >
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
                         
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">
+                        <td colspan="9" class="text-center py-4 text-muted">
                             Записей пока нет
                         </td>
                     </tr>

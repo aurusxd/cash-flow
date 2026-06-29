@@ -1,0 +1,20 @@
+services:
+  web:
+    build: .
+    container_name: cash-flow-web
+    command: >
+      sh -c "uv run python manage.py migrate &&
+             uv run python manage.py seed_cashflow &&
+             uv run python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    environment:
+      SECRET_KEY: django-insecure-docker-local-dev-key
+      DEBUG: "True"
+      ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0
+      SQLITE_NAME: /app/data/db.sqlite3
+    volumes:
+      - sqlite-data:/app/data
+
+volumes:
+  sqlite-data:

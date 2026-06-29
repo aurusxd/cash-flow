@@ -107,4 +107,4 @@ class Record(models.Model):
         ordering = ["-date"]
 
     def __str__(self):
-        return f"{self.date} - {self.amount} RUB"
+        return f"{self.date} - {self.amount} ₽"

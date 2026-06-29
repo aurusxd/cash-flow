@@ -1,4 +1,4 @@
-# Cash Flow Management System
+# Система управления движением денежных средств
 
 Веб-приложение для управления движением денежных средств (ДДС).
 
@@ -57,7 +57,7 @@ cash-flow/
 
 ---
 
-## Установка
+## Установка и запуск
 
 Клонировать репозиторий:
 
@@ -72,27 +72,42 @@ cd cash-flow
 uv sync
 ```
 
----
-
-## Настройка окружения
-
 Создать файл `.env` в корне проекта:
 
-```env
-SECRET_KEY=your_secret_key
-DEBUG=True
+```bash
+cp .env.example .env
 ```
 
----
+Заполнить `SECRET_KEY` в `.env` любым непустым значением:
 
-## Применение миграций
+```env
+SECRET_KEY=django-insecure-local-dev-key
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+```
+
+Применить миграции:
 
 ```bash
-uv run python manage.py makemigrations
 uv run python manage.py migrate
 ```
 
----
+Создать базовые справочники для чистой установки:
+
+```bash
+uv run python manage.py seed_cashflow
+```
+
+Команда добавит:
+
+* статусы: `Бизнес`, `Личное`, `Налог`;
+* типы операций: `Пополнение`, `Списание`;
+* категории и подкатегории:
+  * `Пополнение` -> `Доходы` -> `Продажи`, `Возвраты`;
+  * `Списание` -> `Инфраструктура` -> `VPS`, `Proxy`;
+  * `Списание` -> `Маркетинг` -> `Farpost`, `Avito`.
+
+Команду можно запускать повторно: она не создает дубли.
 
 ## Создание администратора
 
@@ -100,9 +115,7 @@ uv run python manage.py migrate
 uv run python manage.py createsuperuser
 ```
 
----
-
-## Запуск проекта
+Запустить проект:
 
 ```bash
 uv run python manage.py runserver
@@ -119,6 +132,71 @@ http://127.0.0.1:8000/
 ```
 http://127.0.0.1:8000/admin/
 ```
+
+---
+
+## Реализованные функции
+
+* CRUD для записей ДДС
+* CRUD для справочников
+* Фильтрация записей
+* Валидация данных
+* Логические зависимости между сущностями
+* Команда заполнения базовых справочников
+* Docker Compose для запуска одной командой
+
+---
+## Запуск через Docker Compose
+
+Docker Compose позволяет поднять проект одной командой: контейнер сам применит
+миграции, создаст базовые справочники и запустит сервер.
+
+```bash
+docker compose up --build
+```
+
+Если Docker Compose выводит предупреждения про переменные из `.env`, замените
+`SECRET_KEY` в `.env` на простой dev-ключ без символа `$`, например:
+
+```env
+SECRET_KEY=django-insecure-local-dev-key
+```
+
+После запуска приложение будет доступно по адресу:
+
+```text
+http://127.0.0.1:8000/
+```
+
+Что выполняется внутри контейнера при старте:
+
+```bash
+uv run python manage.py migrate
+uv run python manage.py seed_cashflow
+uv run python manage.py runserver 0.0.0.0:8000
+```
+
+SQLite-база хранится в Docker volume `sqlite-data`, поэтому данные сохраняются
+между перезапусками контейнера.
+
+Создать администратора при Docker-запуске:
+
+```bash
+docker compose run --rm web uv run python manage.py createsuperuser
+```
+
+Остановить контейнеры:
+
+```bash
+docker compose down
+```
+
+Удалить контейнеры вместе с SQLite volume:
+
+```bash
+docker compose down -v
+```
+
 
 ---
 
@@ -150,13 +228,4 @@ Record
 
 ---
 
-## Реализованные функции
 
-* CRUD для записей ДДС
-* CRUD для справочников
-* Фильтрация записей
-* Валидация данных
-* Логические зависимости между сущностями
-* Работа с Django ORM
-
----
