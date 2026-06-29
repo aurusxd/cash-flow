@@ -23,6 +23,7 @@ from cashflow.views.record import (
     RecordDeleteSelectedView,
     RecordDeleteView,
     RecordListView,
+    RecordUpdateView,
 )
 
 urlpatterns = [
@@ -38,5 +39,10 @@ urlpatterns = [
         "records/<int:pk>/delete/",
         RecordDeleteView.as_view(),
         name="record_delete",
+    ),
+    path(
+        "records/<int:pk>/update/",
+        RecordUpdateView.as_view(),
+        name="record_update",
     ),
 ]

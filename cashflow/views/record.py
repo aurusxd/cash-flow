@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, DeleteView, ListView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from cashflow.forms import RecordForm
 from cashflow.models import Record
@@ -74,3 +74,14 @@ class RecordDeleteSelectedView(View):
 
         messages.success(request, f"Удалено записей: {deleted_count}.")
         return redirect("record_list")
+
+
+class RecordUpdateView(UpdateView):
+    model = Record
+    form_class = RecordForm
+    template_name = "record_update.html"
+    success_url = reverse_lazy("record_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Запись успешно обновлена.")
+        return super().form_valid(form)
