@@ -34,6 +34,103 @@
         </div>
     </div>
 
+    <form method="get" class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-md-2">
+                    <label class="form-label" for="date_from">Дата с</label>
+                    <input
+                        type="date"
+                        class="form-control"
+                        id="date_from"
+                        name="date_from"
+                        value="{{ selected_filters.date_from }}"
+                    >
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <label class="form-label" for="date_to">Дата по</label>
+                    <input
+                        type="date"
+                        class="form-control"
+                        id="date_to"
+                        name="date_to"
+                        value="{{ selected_filters.date_to }}"
+                    >
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <label class="form-label" for="status">Статус</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">Все</option>
+                        {% for status in statuses %}
+                            <option
+                                value="{{ status.id }}"
+                                {% if status.id|stringformat:"s" == selected_filters.status %}selected{% endif %}
+                            >
+                                {{ status.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <label class="form-label" for="operation_type">Тип</label>
+                    <select class="form-select" id="operation_type" name="operation_type">
+                        <option value="">Все</option>
+                        {% for operation_type in operation_types %}
+                            <option
+                                value="{{ operation_type.id }}"
+                                {% if operation_type.id|stringformat:"s" == selected_filters.operation_type %}selected{% endif %}
+                            >
+                                {{ operation_type.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <label class="form-label" for="category">Категория</label>
+                    <select class="form-select" id="category" name="category">
+                        <option value="">Все</option>
+                        {% for category in categories %}
+                            <option
+                                value="{{ category.id }}"
+                                {% if category.id|stringformat:"s" == selected_filters.category %}selected{% endif %}
+                            >
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-2">
+                    <label class="form-label" for="subcategory">Подкатегория</label>
+                    <select class="form-select" id="subcategory" name="subcategory">
+                        <option value="">Все</option>
+                        {% for subcategory in subcategories %}
+                            <option
+                                value="{{ subcategory.id }}"
+                                {% if subcategory.id|stringformat:"s" == selected_filters.subcategory %}selected{% endif %}
+                            >
+                                {{ subcategory.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12 d-flex gap-2 justify-content-end">
+                    <a href="{% url 'record_list' %}" class="btn btn-outline-secondary">
+                        Сбросить
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Применить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
     <div class="card">
         <div class="card-body p-0">
             <form method="post" action="{% url 'record_delete_selected' %}">
@@ -101,5 +198,41 @@
 
 </div>
 
+<script>
+    const operationTypeFilter = document.getElementById("operation_type");
+    const categoryFilter = document.getElementById("category");
+    const subcategoryFilter = document.getElementById("subcategory");
+
+    operationTypeFilter.addEventListener("change", async () => {
+        const operationTypeId = operationTypeFilter.value;
+
+        categoryFilter.innerHTML = '<option value="">Все</option>';
+        subcategoryFilter.innerHTML = '<option value="">Все</option>';
+
+        if (!operationTypeId) return;
+
+        const response = await fetch(`/ajax/categories/?operation_type_id=${operationTypeId}`);
+        const categories = await response.json();
+
+        categories.forEach(category => {
+            categoryFilter.add(new Option(category.name, category.id));
+        });
+    });
+
+    categoryFilter.addEventListener("change", async () => {
+        const categoryId = categoryFilter.value;
+
+        subcategoryFilter.innerHTML = '<option value="">Все</option>';
+
+        if (!categoryId) return;
+
+        const response = await fetch(`/ajax/subcategories/?category_id=${categoryId}`);
+        const subcategories = await response.json();
+
+        subcategories.forEach(subcategory => {
+            subcategoryFilter.add(new Option(subcategory.name, subcategory.id));
+        });
+    });
+</script>
 </body>
 </html>

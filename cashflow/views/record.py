@@ -6,7 +6,7 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from cashflow.forms import RecordForm
-from cashflow.models import Category, Record, Subcategory
+from cashflow.models import Category, OperationType, Record, Status, Subcategory
 from cashflow.selectors.record import get_records_queryset
 
 
@@ -39,6 +39,39 @@ class RecordListView(ListView):
             queryset = queryset.filter(subcategory_id=subcategory)
 
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        selected_operation_type = self.request.GET.get("operation_type", "")
+        selected_category = self.request.GET.get("category", "")
+
+        categories = Category.objects.select_related("operation_type")
+        if selected_operation_type:
+            categories = categories.filter(operation_type_id=selected_operation_type)
+
+        subcategories = Subcategory.objects.select_related("category")
+        if selected_category:
+            subcategories = subcategories.filter(category_id=selected_category)
+
+        context.update(
+            {
+                "statuses": Status.objects.all(),
+                "operation_types": OperationType.objects.all(),
+                "categories": categories,
+                "subcategories": subcategories,
+                "selected_filters": {
+                    "date_from": self.request.GET.get("date_from", ""),
+                    "date_to": self.request.GET.get("date_to", ""),
+                    "status": self.request.GET.get("status", ""),
+                    "operation_type": selected_operation_type,
+                    "category": selected_category,
+                    "subcategory": self.request.GET.get("subcategory", ""),
+                },
+            }
+        )
+
+        return context
 
 
 class RecordCreateView(CreateView):
