@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,59 @@
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.8/dist/lux/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    
+    <div class="container py-4">
+        <div class="mb-4">
+            <a href="{% url 'record_list' %}" class="btn btn-outline-secondary">
+                Назад
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h1 class="h4 mb-0">Удаление записи ДДС</h1>
+            </div>
+
+            <div class="card-body">
+                <p class="mb-4">
+                    Вы действительно хотите удалить эту запись?
+                </p>
+
+                <dl class="row mb-4">
+                    <dt class="col-sm-3">Дата</dt>
+                    <dd class="col-sm-9">{{ object.date }}</dd>
+
+                    <dt class="col-sm-3">Статус</dt>
+                    <dd class="col-sm-9">{{ object.status }}</dd>
+
+                    <dt class="col-sm-3">Тип</dt>
+                    <dd class="col-sm-9">{{ object.operation_type }}</dd>
+
+                    <dt class="col-sm-3">Категория</dt>
+                    <dd class="col-sm-9">{{ object.category }}</dd>
+
+                    <dt class="col-sm-3">Подкатегория</dt>
+                    <dd class="col-sm-9">{{ object.subcategory }}</dd>
+
+                    <dt class="col-sm-3">Сумма</dt>
+                    <dd class="col-sm-9">{{ object.amount }} ₽</dd>
+
+                    <dt class="col-sm-3">Комментарий</dt>
+                    <dd class="col-sm-9">{{ object.comment|default:"—" }}</dd>
+                </dl>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            Удалить
+                        </button>
+                        <a href="{% url 'record_list' %}" class="btn btn-outline-secondary">
+                            Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
