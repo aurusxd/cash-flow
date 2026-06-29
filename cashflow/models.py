@@ -8,6 +8,7 @@ class Status(models.Model):
     class Meta:
         verbose_name = "Статус"
         verbose_name_plural = "Статусы"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -19,6 +20,7 @@ class OperationType(models.Model):
     class Meta:
         verbose_name = "Тип операции"
         verbose_name_plural = "Типы операций"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -36,6 +38,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
+        ordering = ["operation_type__name", "name"]
         unique_together = ("name", "operation_type")
 
     def __str__(self):
@@ -54,6 +57,7 @@ class Subcategory(models.Model):
     class Meta:
         verbose_name = "Подкатегория"
         verbose_name_plural = "Подкатегории"
+        ordering = ["category__operation_type__name", "category__name", "name"]
         unique_together = ("name", "category")
 
     def __str__(self):
@@ -103,4 +107,4 @@ class Record(models.Model):
         ordering = ["-date"]
 
     def __str__(self):
-        return f"{self.date} — {self.amount} ₽"
+        return f"{self.date} - {self.amount} RUB"

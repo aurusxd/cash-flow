@@ -1,11 +1,12 @@
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from cashflow.forms import RecordForm
-from cashflow.models import Record
+from cashflow.models import Category, Record, Subcategory
 from cashflow.selectors.record import get_records_queryset
 
 
@@ -85,3 +86,23 @@ class RecordUpdateView(UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Запись успешно обновлена.")
         return super().form_valid(form)
+
+
+def get_categories(request):
+    operation_type_id = request.GET.get("operation_type_id")
+
+    categories = Category.objects.filter(operation_type_id=operation_type_id).values(
+        "id", "name"
+    )
+
+    return JsonResponse(list(categories), safe=False)
+
+
+def get_subcategories(request):
+    category_id = request.GET.get("category_id")
+
+    subcategories = Subcategory.objects.filter(category_id=category_id).values(
+        "id", "name"
+    )
+
+    return JsonResponse(list(subcategories), safe=False)
